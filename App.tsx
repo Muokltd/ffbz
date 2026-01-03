@@ -29,16 +29,14 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-[500px]">
-        {/* Logo Section - Conditional visibility to remove branding from the first page */}
-        {view !== 'entry' && (
-          <div className="flex justify-center mb-6">
-            <img 
-              src="https://i.postimg.cc/kMBcDVJz/4l-Cu2zih0ca.png" 
-              alt="Social Connect" 
-              className="h-[60px] md:h-[106px] object-contain"
-            />
-          </div>
-        )}
+        {/* Logo Section - Now always visible on all pages as requested */}
+        <div className="flex justify-center mb-6">
+          <img 
+            src="https://i.postimg.cc/kMBcDVJz/4l-Cu2zih0ca.png" 
+            alt="Social Connect" 
+            className="h-[60px] md:h-[106px] object-contain"
+          />
+        </div>
 
         {/* Card Container */}
         <div className="bg-white shadow-xl rounded-lg overflow-hidden w-full border border-gray-200">
