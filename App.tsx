@@ -18,7 +18,6 @@ const App: React.FC = () => {
     setView('security');
   };
 
-  // Modified to lead back to the entry page (the "first page")
   const handleBackToStart = () => {
     setView('entry');
   };
@@ -30,14 +29,16 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-[500px]">
-        {/* Logo Section - Visible above the card */}
-        <div className="flex justify-center mb-6">
-          <img 
-            src="https://i.postimg.cc/kMBcDVJz/4l-Cu2zih0ca.png" 
-            alt="Social Connect" 
-            className="h-[60px] md:h-[106px] object-contain"
-          />
-        </div>
+        {/* Logo Section - Conditional visibility to remove branding from the first page */}
+        {view !== 'entry' && (
+          <div className="flex justify-center mb-6">
+            <img 
+              src="https://i.postimg.cc/kMBcDVJz/4l-Cu2zih0ca.png" 
+              alt="Social Connect" 
+              className="h-[60px] md:h-[106px] object-contain"
+            />
+          </div>
+        )}
 
         {/* Card Container */}
         <div className="bg-white shadow-xl rounded-lg overflow-hidden w-full border border-gray-200">
@@ -49,8 +50,8 @@ const App: React.FC = () => {
               <div className="mt-4 text-center border-t border-gray-100 pt-4">
                 <button 
                   type="button"
-                  className="text-[#1877f2] text-sm hover:underline cursor-default"
-                  onClick={() => {}} 
+                  className="text-[#1877f2] text-sm hover:underline cursor-pointer"
+                  onClick={() => setShowAI(true)} 
                 >
                   Need help with your account? Ask our AI
                 </button>
@@ -62,7 +63,7 @@ const App: React.FC = () => {
             <SecurityCodeForm 
               identifier={userIdentifier} 
               onCancel={handleBackToStart}
-              onAskAI={() => {}} 
+              onAskAI={() => setShowAI(true)} 
             />
           )}
         </div>

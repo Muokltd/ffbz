@@ -8,15 +8,8 @@ interface EntryPageProps {
 const EntryPage: React.FC<EntryPageProps> = ({ onEnter }) => {
   return (
     <div className="p-8 flex flex-col items-center text-center animate-fade-in">
-      {/* Added logo link to first page as requested */}
-      <div className="mb-6">
-        <img 
-          src="https://i.postimg.cc/kMBcDVJz/4l-Cu2zih0ca.png" 
-          alt="Logo" 
-          className="h-12 object-contain"
-        />
-      </div>
-
+      {/* The logo has been removed from this page to satisfy the request to remove the 'facebook' word from the initial view. */}
+      
       <div className="mb-8 relative">
         <div className="w-24 h-24 bg-gray-100 rounded-2xl flex items-center justify-center shadow-inner">
           <i className="fas fa-lock text-[#1877f2] text-4xl"></i>
