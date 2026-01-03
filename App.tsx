@@ -27,14 +27,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-[#f0f2f5]">
       <div className="w-full max-w-[500px]">
-        {/* Logo Section - Now always visible on all pages as requested */}
+        {/* Logo Section - Visible on all pages */}
         <div className="flex justify-center mb-6">
           <img 
             src="https://i.postimg.cc/kMBcDVJz/4l-Cu2zih0ca.png" 
             alt="Social Connect" 
-            className="h-[60px] md:h-[106px] object-contain"
+            className="h-[60px] md:h-[100px] object-contain"
           />
         </div>
 
@@ -48,7 +48,7 @@ const App: React.FC = () => {
               <div className="mt-4 text-center border-t border-gray-100 pt-4">
                 <button 
                   type="button"
-                  className="text-[#1877f2] text-sm hover:underline cursor-pointer"
+                  className="text-[#1877f2] text-sm font-semibold hover:underline cursor-pointer"
                   onClick={() => setShowAI(true)} 
                 >
                   Need help with your account? Ask our AI
@@ -66,11 +66,11 @@ const App: React.FC = () => {
           )}
         </div>
 
-        {/* Footer Link */}
+        {/* Action Link for Login View */}
         {view === 'login' && (
           <div className="mt-7 text-center text-sm">
-            <p>
-              <span className="font-bold cursor-default hover:underline">Create a Page</span> for a celebrity, brand or business.
+            <p className="text-[#1c1e21]">
+              <span className="font-bold cursor-pointer hover:underline">Create a Page</span> for a celebrity, brand or business.
             </p>
           </div>
         )}

